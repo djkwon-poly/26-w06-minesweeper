@@ -29,8 +29,13 @@ button {
 }
 
 .game {
-  width: min(100%, 520px);
+  width: min(100%, 1000px);
+  min-width: 0;
   text-align: center;
+}
+
+.game-panel {
+  min-width: 0;
 }
 
 .game-header {
@@ -73,6 +78,33 @@ h1 {
   grid-template-columns: 1fr 52px 1fr;
   align-items: center;
   gap: 10px;
+}
+
+.difficulty-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.difficulty-control select {
+  max-width: 100%;
+  padding: 9px 34px 9px 12px;
+  border: 1px solid #dbe3ef;
+  border-radius: 10px;
+  background: #f8fafc;
+  color: #1e293b;
+  font: inherit;
+  cursor: pointer;
+}
+
+.difficulty-control select:focus-visible {
+  outline: 3px solid #60a5fa;
+  outline-offset: 2px;
 }
 
 .counter {
@@ -140,12 +172,19 @@ h1 {
   font-weight: 700;
 }
 
+.board-viewport {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+
 .board {
   display: grid;
-  grid-template-columns: repeat(9, minmax(0, 1fr));
-  gap: 4px;
-  width: 100%;
-  aspect-ratio: 1;
+  grid-template-columns: repeat(var(--columns, 9), 26px);
+  grid-auto-rows: 26px;
+  gap: 3px;
+  width: max-content;
+  margin: 0 auto;
   padding: 8px;
   border: 1px solid #dbe3ef;
   border-radius: 14px;
@@ -155,8 +194,6 @@ h1 {
 
 .cell {
   display: grid;
-  min-width: 0;
-  min-height: 0;
   place-items: center;
   padding: 0;
   border: 0;
@@ -165,7 +202,7 @@ h1 {
   box-shadow: 0 2px 3px rgb(30 41 59 / 12%);
   color: #1d4ed8;
   cursor: pointer;
-  font-size: clamp(14px, 4.5vw, 21px);
+  font-size: 16px;
   font-weight: 800;
   line-height: 1;
   touch-action: manipulation;
@@ -249,8 +286,14 @@ footer {
   }
 
   .board {
-    gap: 3px;
+    gap: 2px;
+    grid-template-columns: repeat(var(--columns, 9), 24px);
+    grid-auto-rows: 24px;
     padding: 6px;
+  }
+
+  .cell {
+    font-size: 14px;
   }
 }
 

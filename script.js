@@ -1,13 +1,19 @@
-const SIZE = 9;
-const MINE_TOTAL = 10;
+const DIFFICULTIES = {
+  beginner: { name: "초급", rows: 9, columns: 9, mines: 10 },
+  intermediate: { name: "중급", rows: 16, columns: 16, mines: 40 },
+  expert: { name: "고급", rows: 16, columns: 30, mines: 99 },
+};
 
 const boardElement = document.querySelector("#board");
 const mineCountElement = document.querySelector("#mine-count");
 const timerElement = document.querySelector("#timer");
 const restartButton = document.querySelector("#restart-button");
 const gameMessage = document.querySelector("#game-message");
+const difficultySelect = document.querySelector("#difficulty");
+const gameDetails = document.querySelector("#game-details");
 
 let cells = [];
+let difficulty = DIFFICULTIES[difficultySelect.value];
 let flags = 0;
 let revealedCount = 0;
 let seconds = 0;
@@ -15,9 +21,9 @@ let timerId = null;
 let gameState = "ready";
 
 function createBoard() {
-  cells = Array.from({ length: SIZE * SIZE }, (_, index) => ({
-    row: Math.floor(index / SIZE),
-    column: index % SIZE,
+  cells = Array.from({ length: difficulty.rows * difficulty.columns }, (_, index) => ({
+    row: Math.floor(index / difficulty.columns),
+    column: index % difficulty.columns,
     mine: false,
     adjacent: 0,
     revealed: false,
@@ -26,6 +32,8 @@ function createBoard() {
   }));
 
   boardElement.replaceChildren();
+  boardElement.style.setProperty("--columns", difficulty.columns);
+  boardElement.setAttribute("aria-label", `${difficulty.rows} 곱하기 ${difficulty.columns} 게임판`);
   for (const cell of cells) {
     const button = document.createElement("button");
     button.type = "button";
@@ -55,8 +63,8 @@ function getNeighbors(cell) {
       if (rowOffset === 0 && columnOffset === 0) continue;
       const row = cell.row + rowOffset;
       const column = cell.column + columnOffset;
-      if (row >= 0 && row < SIZE && column >= 0 && column < SIZE) {
-        neighbors.push(cells[row * SIZE + column]);
+      if (row >= 0 && row < difficulty.rows && column >= 0 && column < difficulty.columns) {
+        neighbors.push(cells[row * difficulty.columns + column]);
       }
     }
   }
@@ -67,7 +75,7 @@ function placeMines(firstCell) {
   const safeZone = new Set([firstCell, ...getNeighbors(firstCell)]);
   const available = cells.filter((cell) => !safeZone.has(cell));
 
-  for (let index = 0; index < MINE_TOTAL; index += 1) {
+  for (let index = 0; index < difficulty.mines; index += 1) {
     const randomIndex = Math.floor(Math.random() * available.length);
     available[randomIndex].mine = true;
     available.splice(randomIndex, 1);
@@ -107,7 +115,7 @@ function openCell(cell) {
   }
 
   revealCell(cell);
-  if (revealedCount === cells.length - MINE_TOTAL) {
+  if (revealedCount === cells.length - difficulty.mines) {
     finishGame("won", "🎉 성공! 모든 안전한 칸을 찾았어요.");
   }
 }
@@ -151,7 +159,7 @@ function toggleFlag(cell) {
   cell.element.textContent = cell.flagged ? "🚩" : "";
   const description = cell.flagged ? "깃발 표시됨" : "닫힌 칸";
   cell.element.setAttribute("aria-label", `행 ${cell.row + 1}, 열 ${cell.column + 1}, ${description}`);
-  mineCountElement.textContent = String(MINE_TOTAL - flags);
+  mineCountElement.textContent = String(difficulty.mines - flags);
 }
 
 function revealAllMines(triggeredMine) {
@@ -185,13 +193,20 @@ function resetGame() {
   revealedCount = 0;
   seconds = 0;
   gameState = "ready";
-  mineCountElement.textContent = String(MINE_TOTAL);
+  mineCountElement.textContent = String(difficulty.mines);
   timerElement.textContent = "000";
   restartButton.textContent = "🙂";
   gameMessage.textContent = "왼쪽 클릭으로 칸을 열고, 오른쪽 클릭으로 깃발을 표시하세요.";
+  gameDetails.textContent = `${difficulty.name} · 지뢰 ${difficulty.mines}개 · 첫 클릭 주변 8칸 안전`;
   delete gameMessage.dataset.state;
   createBoard();
 }
 
+function changeDifficulty() {
+  difficulty = DIFFICULTIES[difficultySelect.value];
+  resetGame();
+}
+
 restartButton.addEventListener("click", resetGame);
+difficultySelect.addEventListener("change", changeDifficulty);
 resetGame();

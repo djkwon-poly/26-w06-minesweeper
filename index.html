@@ -17,6 +17,15 @@
       </header>
 
       <section class="game-panel" aria-label="지뢰찾기 게임">
+        <div class="difficulty-control">
+          <label for="difficulty">난이도</label>
+          <select id="difficulty" name="difficulty">
+            <option value="beginner">초급 · 9 × 9 · 지뢰 10개</option>
+            <option value="intermediate">중급 · 16 × 16 · 지뢰 40개</option>
+            <option value="expert">고급 · 30 × 16 · 지뢰 99개</option>
+          </select>
+        </div>
+
         <div class="game-toolbar">
           <div class="counter" aria-label="남은 지뢰 수">
             <span aria-hidden="true">🚩</span>
@@ -34,14 +43,16 @@
         <p id="game-message" class="game-message" aria-live="polite">
           왼쪽 클릭으로 칸을 열고, 오른쪽 클릭으로 깃발을 표시하세요.
         </p>
-        <div id="board" class="board" aria-label="9 곱하기 9 게임판"></div>
+        <div class="board-viewport">
+          <div id="board" class="board" aria-label="9 곱하기 9 게임판"></div>
+        </div>
         <div class="legend" aria-label="조작 방법">
           <span><kbd>왼쪽 클릭</kbd> 칸 열기</span>
           <span><kbd>오른쪽 클릭</kbd> 깃발 표시</span>
           <span><kbd>좌우 동시 클릭</kbd> 숫자 주변 열기</span>
         </div>
       </section>
-      <footer>초급 · 지뢰 10개 · 첫 클릭 주변 8칸 안전</footer>
+      <footer id="game-details">초급 · 지뢰 10개 · 첫 클릭 주변 8칸 안전</footer>
     </main>
   </body>
 </html>
