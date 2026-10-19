@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f4f7fb" />
+    <title>지뢰찾기</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <main class="game" aria-labelledby="game-title">
+      <header class="game-header">
+        <p class="eyebrow">CLASSIC MINESWEEPER</p>
+        <h1 id="game-title">지뢰찾기</h1>
+        <p class="subtitle">숫자를 따라 지뢰를 피하고, 안전한 칸을 모두 찾아보세요.</p>
+      </header>
+
+      <section class="game-panel" aria-label="지뢰찾기 게임">
+        <div class="game-toolbar">
+          <div class="counter" aria-label="남은 지뢰 수">
+            <span class="counter-icon" aria-hidden="true">🚩</span>
+            <span id="mine-count" class="counter-value">10</span>
+            <span class="counter-label">남은 지뢰</span>
+          </div>
+          <button id="restart-button" class="restart-button" type="button" aria-label="새 게임 시작">
+            🙂
+          </button>
+          <div class="counter timer" aria-label="경과 시간">
+            <span class="counter-icon" aria-hidden="true">⏱</span>
+            <span id="timer" class="counter-value">000</span>
+            <span class="counter-label">초</span>
+          </div>
+        </div>
+
+        <p id="game-message" class="game-message" aria-live="polite">
+          숫자 칸의 깃발 수가 맞으면 좌우 동시 클릭으로 주변 칸을 열 수 있어요.
+        </p>
+
+        <div id="board" class="board" aria-label="9 곱하기 9 게임판"></div>
+
+        <div class="legend" aria-hidden="true">
+          <span><kbd>왼쪽 클릭</kbd> 칸 열기</span>
+          <span><kbd>오른쪽 클릭</kbd> 깃발 표시</span>
+          <span><kbd>좌우 동시 클릭</kbd> 숫자 주변 열기</span>
+        </div>
+      </section>
+      <footer>지뢰 10개 · 9 × 9 칸 · 첫 클릭은 안전해요</footer>
+    </main>
+  </body>
+</html>
