@@ -9,11 +9,11 @@ const mineCountElement = document.querySelector("#mine-count");
 const timerElement = document.querySelector("#timer");
 const restartButton = document.querySelector("#restart-button");
 const gameMessage = document.querySelector("#game-message");
-const difficultySelect = document.querySelector("#difficulty");
+const difficultyButtons = document.querySelectorAll("[data-difficulty]");
 const gameDetails = document.querySelector("#game-details");
 
 let cells = [];
-let difficulty = DIFFICULTIES[difficultySelect.value];
+let difficulty = DIFFICULTIES.beginner;
 let flags = 0;
 let revealedCount = 0;
 let seconds = 0;
@@ -33,7 +33,7 @@ function createBoard() {
 
   boardElement.replaceChildren();
   boardElement.style.setProperty("--columns", difficulty.columns);
-  boardElement.setAttribute("aria-label", `${difficulty.rows} 곱하기 ${difficulty.columns} 게임판`);
+  boardElement.setAttribute("aria-label", `${difficulty.rows}행 ${difficulty.columns}열 게임판`);
   for (const cell of cells) {
     const button = document.createElement("button");
     button.type = "button";
@@ -92,6 +92,12 @@ function startTimer() {
     seconds += 1;
     timerElement.textContent = String(Math.min(seconds, 999)).padStart(3, "0");
   }, 1000);
+}
+
+function formatMineCount(count) {
+  return count < 0
+    ? `-${String(Math.abs(count)).padStart(2, "0")}`
+    : String(count).padStart(3, "0");
 }
 
 function openCell(cell) {
@@ -159,7 +165,7 @@ function toggleFlag(cell) {
   cell.element.textContent = cell.flagged ? "🚩" : "";
   const description = cell.flagged ? "깃발 표시됨" : "닫힌 칸";
   cell.element.setAttribute("aria-label", `행 ${cell.row + 1}, 열 ${cell.column + 1}, ${description}`);
-  mineCountElement.textContent = String(difficulty.mines - flags);
+  mineCountElement.textContent = formatMineCount(difficulty.mines - flags);
 }
 
 function revealAllMines(triggeredMine) {
@@ -193,20 +199,24 @@ function resetGame() {
   revealedCount = 0;
   seconds = 0;
   gameState = "ready";
-  mineCountElement.textContent = String(difficulty.mines);
+  mineCountElement.textContent = formatMineCount(difficulty.mines);
   timerElement.textContent = "000";
   restartButton.textContent = "🙂";
   gameMessage.textContent = "왼쪽 클릭으로 칸을 열고, 오른쪽 클릭으로 깃발을 표시하세요.";
-  gameDetails.textContent = `${difficulty.name} · 지뢰 ${difficulty.mines}개 · 첫 클릭 주변 8칸 안전`;
+  gameDetails.textContent = `${difficulty.name} · ${difficulty.columns} × ${difficulty.rows} · 지뢰 ${difficulty.mines}개`;
   delete gameMessage.dataset.state;
   createBoard();
 }
 
-function changeDifficulty() {
-  difficulty = DIFFICULTIES[difficultySelect.value];
+function changeDifficulty(event) {
+  const selectedDifficulty = event.currentTarget.dataset.difficulty;
+  difficulty = DIFFICULTIES[selectedDifficulty];
+  for (const button of difficultyButtons) {
+    button.setAttribute("aria-pressed", String(button === event.currentTarget));
+  }
   resetGame();
 }
 
 restartButton.addEventListener("click", resetGame);
-difficultySelect.addEventListener("change", changeDifficulty);
+for (const button of difficultyButtons) button.addEventListener("click", changeDifficulty);
 resetGame();
